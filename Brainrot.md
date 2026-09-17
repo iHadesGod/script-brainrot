@@ -63,7 +63,7 @@ FOVCircle.Visible = false
 
 local svFOVCircle = Drawing.new("Circle")
 svFOVCircle.Thickness = 1.5
-svFOVCircle.Color = Color3.fromRGB(255, 255, 255)
+svFOVCircle.Color = Color3.fromRGB(255, 0, 0)
 svFOVCircle.Filled = false
 svFOVCircle.Visible = false
  
@@ -296,7 +296,6 @@ local TabContents = {}
 local ActiveTab = nil
  
 local TAB_ICONS = {
-    ["Aimbot"]     = "🎯",
     ["svAimbot"]   = "🔮",
     ["ESP"]        = "👁️",
     ["Fly"]        = "✈️",
@@ -569,18 +568,11 @@ end
 -- ============================================================
 -- CONSTRUÇÃO DAS ABAS
 -- ============================================================
-createTab("Aimbot")
 createTab("svAimbot")
 createTab("ESP")
 createTab("Fly")
 createTab("Glitch")
 createTab("Otimiz")
- 
--- Legitimate Aimbot
-createToggle(TabContents["Aimbot"].Content, "Aimbot Ativado", function(v) getgenv().AimbotEnabled = v end, false)
-createToggle(TabContents["Aimbot"].Content, "Mostrar FOV", function(v) FOVCircle.Visible = v end, false)
-createSlider(TabContents["Aimbot"].Content, "Suavidade", 0, 100, 10, function(v) getgenv().AimbotSmoothness = v / 100 end)
-createSlider(TabContents["Aimbot"].Content, "FOV", 10, 800, 150, function(v) getgenv().AimbotFOV = v end)
  
 -- Brutal Silent Aim (svAimbot)
 createToggle(TabContents["svAimbot"].Content, "svAimbot Brutal", function(v) getgenv().svAimbotEnabled = v end, false)
@@ -873,11 +865,11 @@ UserInputService.InputBegan:Connect(function(input, gpe)
 end)
  
 -- Inicialização
-if TabContents["Aimbot"] then
-    TabContents["Aimbot"].Content.Visible = true
-    TabContents["Aimbot"].Bar.Visible = true
-    TabContents["Aimbot"].Button.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-    TabContents["Aimbot"].Icon.TextColor3 = C.ACCENT
-    TabContents["Aimbot"].Label.TextColor3 = C.TEXT
-    ActiveTab = "Aimbot"
+if TabContents["svAimbot"] then
+    TabContents["svAimbot"].Content.Visible = true
+    TabContents["svAimbot"].Bar.Visible = true
+    TabContents["svAimbot"].Button.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+    TabContents["svAimbot"].Icon.TextColor3 = C.ACCENT
+    TabContents["svAimbot"].Label.TextColor3 = C.TEXT
+    ActiveTab = "svAimbot"
 end
