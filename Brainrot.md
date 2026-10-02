@@ -35,20 +35,6 @@ getgenv().svAimbotHitChance = 100
 getgenv().svAimbotShowFOV = false
 local svTarget = nil
  
--- ESP
-getgenv().ESPEnabled = false
-getgenv().ESPNames = false
-getgenv().ESPDistance = false
-getgenv().ESPRGB = true
-getgenv().ESPBoxes = false
-getgenv().ESPTracers = false
- 
--- Fly
-local flyActive = false
-local flySpeed = 400
-local FlyVel = nil
-local FlyGyro = nil
- 
 -- Hitbox
 getgenv().HitboxStatus = false
 getgenv().HitboxSize = 15
@@ -71,9 +57,9 @@ svFOVCircle.Visible = false
 -- PALETA E CONFIGURAÇÕES VISUAIS
 -- ============================================================
 local C = {
-    BG          = Color3.fromRGB(10, 10, 10),
-    PANEL       = Color3.fromRGB(15, 15, 15),
-    SIDEBAR     = Color3.fromRGB(12, 12, 12),
+    BG          = Color3.fromRGB(18, 18, 18),
+    PANEL       = Color3.fromRGB(22, 22, 22),
+    SIDEBAR     = Color3.fromRGB(15, 15, 15),
     ACCENT      = Color3.fromRGB(255, 0, 0),
     ACCENT2     = Color3.fromRGB(180, 0, 0),
     ACCENT_DIM  = Color3.fromRGB(60, 0, 0),
@@ -82,7 +68,7 @@ local C = {
     TEXT        = Color3.fromRGB(255, 255, 255),
     SUBTEXT     = Color3.fromRGB(150, 150, 150),
     BORDER      = Color3.fromRGB(40, 40, 40),
-    BORDER_GLOW = Color3.fromRGB(200, 0, 0),
+    BORDER_GLOW = Color3.fromRGB(40, 40, 40),
     SLIDER_BG   = Color3.fromRGB(20, 20, 20),
     SLIDER_FG   = Color3.fromRGB(255, 0, 0),
     TOGGLE_KNOB = Color3.fromRGB(255, 255, 255),
@@ -94,7 +80,7 @@ local C = {
 }
  
 local MENU = {
-    W = 640, H = 480,
+    W = 560, H = 420,
     TOGGLE_KEY = Enum.KeyCode.K,
     RADIUS = 14,
 }
@@ -147,32 +133,6 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = PlayerGui
  
-local Shadow = Instance.new("ImageLabel", ScreenGui)
-Shadow.Name = "Shadow"
-Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-Shadow.BackgroundTransparency = 1
-Shadow.Size = UDim2.new(0, MENU.W + 100, 0, MENU.H + 100)
-Shadow.Position = UDim2.new(0.5, 0, -1.5, 0)
-Shadow.Image = "rbxassetid://6014261993"
-Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-Shadow.ImageTransparency = 0.25
-Shadow.ScaleType = Enum.ScaleType.Slice
-Shadow.SliceCenter = Rect.new(49, 49, 450, 450)
-Shadow.Visible = false
- 
-local ShadowGlow = Instance.new("ImageLabel", ScreenGui)
-ShadowGlow.Name = "ShadowGlow"
-ShadowGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-ShadowGlow.BackgroundTransparency = 1
-ShadowGlow.Size = UDim2.new(0, MENU.W + 60, 0, MENU.H + 60)
-ShadowGlow.Position = UDim2.new(0.5, 0, -1.5, 0)
-ShadowGlow.Image = "rbxassetid://6014261993"
-ShadowGlow.ImageColor3 = Color3.fromRGB(255, 0, 0)
-ShadowGlow.ImageTransparency = 0.85
-ShadowGlow.ScaleType = Enum.ScaleType.Slice
-ShadowGlow.SliceCenter = Rect.new(49, 49, 450, 450)
-ShadowGlow.Visible = false
- 
 local Main = Instance.new("Frame", ScreenGui)
 Main.Name = "wMainGang"
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -185,7 +145,7 @@ addCorner(Main, MENU.RADIUS)
 addStroke(Main, C.BORDER, 1)
  
 local TitleBar = Instance.new("Frame", Main)
-TitleBar.Size = UDim2.new(1, 0, 0, 56)
+TitleBar.Size = UDim2.new(1, 0, 0, 46)
 TitleBar.BackgroundColor3 = C.TITLE_BG
 TitleBar.BorderSizePixel = 0
 addCorner(TitleBar, MENU.RADIUS)
@@ -196,53 +156,15 @@ TitleBarFix.Position = UDim2.new(0, 0, 1, -MENU.RADIUS)
 TitleBarFix.BackgroundColor3 = C.TITLE_BG
 TitleBarFix.BorderSizePixel = 0
  
-local TitleLine = Instance.new("Frame", TitleBar)
-TitleLine.Size = UDim2.new(1, 0, 0, 2)
-TitleLine.Position = UDim2.new(0, 0, 1, -2)
-TitleLine.BackgroundColor3 = C.ACCENT
-TitleLine.BorderSizePixel = 0
-local TitleLineGrad = Instance.new("UIGradient", TitleLine)
-TitleLineGrad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0,   C.ACCENT2),
-    ColorSequenceKeypoint.new(0.4, C.ACCENT),
-    ColorSequenceKeypoint.new(0.6, C.ACCENT),
-    ColorSequenceKeypoint.new(1,   C.ACCENT2),
-})
- 
-local function makeDot(color, posX)
-    local d = Instance.new("Frame", TitleBar)
-    d.Size = UDim2.new(0, 11, 0, 11)
-    d.Position = UDim2.new(0, posX, 0.5, -5)
-    d.BackgroundColor3 = color
-    d.BorderSizePixel = 0
-    addCorner(d, 99)
-    return d
-end
-makeDot(C.DOT_RED, 14)
-makeDot(C.DOT_YEL, 30)
-makeDot(C.DOT_GRN, 46)
- 
 local TitleLabel = Instance.new("TextLabel", TitleBar)
-TitleLabel.Size = UDim2.new(0, 200, 1, 0)
-TitleLabel.Position = UDim2.new(0, 68, 0, 0)
+TitleLabel.Size = UDim2.new(0, 250, 1, 0)
+TitleLabel.Position = UDim2.new(0, 16, 0, 0)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Text = "wClownMaster"
 TitleLabel.TextColor3 = C.TEXT
 TitleLabel.Font = Enum.Font.GothamBold
 TitleLabel.TextSize = 15
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
- 
-local TitleBadge = Instance.new("TextLabel", TitleBar)
-TitleBadge.Size = UDim2.new(0, 28, 0, 18)
-TitleBadge.Position = UDim2.new(0, 178, 0.5, -9)
-TitleBadge.BackgroundColor3 = C.ACCENT_DIM
-TitleBadge.BorderSizePixel = 0
-TitleBadge.Text = "vBeta"
-TitleBadge.TextColor3 = C.ACCENT
-TitleBadge.Font = Enum.Font.GothamBold
-TitleBadge.TextSize = 10
-addCorner(TitleBadge, 4)
-addStroke(TitleBadge, C.BORDER_GLOW, 1)
  
 local KeyHintFrame = Instance.new("Frame", TitleBar)
 KeyHintFrame.Size = UDim2.new(0, 90, 0, 22)
@@ -263,27 +185,27 @@ addCorner(KeyBadge, 4)
 addStroke(KeyBadge, C.BORDER, 1)
  
 local BodyFrame = Instance.new("Frame", Main)
-BodyFrame.Size = UDim2.new(1, -20, 1, -68)
-BodyFrame.Position = UDim2.new(0, 10, 0, 62)
+BodyFrame.Size = UDim2.new(1, -20, 1, -58)
+BodyFrame.Position = UDim2.new(0, 10, 0, 52)
 BodyFrame.BackgroundTransparency = 1
  
 local Sidebar = Instance.new("Frame", BodyFrame)
-Sidebar.Size = UDim2.new(0, 136, 1, 0)
+Sidebar.Size = UDim2.new(0, 116, 1, 0)
 Sidebar.BackgroundColor3 = C.SIDEBAR
 Sidebar.BorderSizePixel = 0
 addCorner(Sidebar, 10)
 addStroke(Sidebar, C.BORDER, 1)
  
 local SidebarList = Instance.new("UIListLayout", Sidebar)
-SidebarList.Padding = UDim.new(0, 3)
+SidebarList.Padding = UDim.new(0, 4)
 SidebarList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 SidebarList.VerticalAlignment = Enum.VerticalAlignment.Top
 SidebarList.SortOrder = Enum.SortOrder.LayoutOrder
 addPadding(Sidebar, 10, 10, 8, 8)
  
 local ContentArea = Instance.new("Frame", BodyFrame)
-ContentArea.Size = UDim2.new(1, -148, 1, 0)
-ContentArea.Position = UDim2.new(0, 148, 0, 0)
+ContentArea.Size = UDim2.new(1, -128, 1, 0)
+ContentArea.Position = UDim2.new(0, 128, 0, 0)
 ContentArea.BackgroundColor3 = C.PANEL
 ContentArea.BorderSizePixel = 0
 addCorner(ContentArea, 10)
@@ -297,15 +219,13 @@ local ActiveTab = nil
  
 local TAB_ICONS = {
     ["svAimbot"]   = "🔮",
-    ["ESP"]        = "👁️",
-    ["Fly"]        = "✈️",
     ["Glitch"]     = "⚡",
     ["Otimiz"]     = "⚙️",
 }
  
 local function createTab(name)
     local Btn = Instance.new("TextButton", Sidebar)
-    Btn.Size = UDim2.new(1, 0, 0, 38)
+    Btn.Size = UDim2.new(1, 0, 0, 34)
     Btn.BackgroundColor3 = C.SIDEBAR
     Btn.BorderSizePixel = 0
     Btn.AutoButtonColor = false
@@ -569,8 +489,6 @@ end
 -- CONSTRUÇÃO DAS ABAS
 -- ============================================================
 createTab("svAimbot")
-createTab("ESP")
-createTab("Fly")
 createTab("Glitch")
 createTab("Otimiz")
  
@@ -581,21 +499,6 @@ createSlider(TabContents["svAimbot"].Content, "FOV Brutal", 10, 800, 200, functi
 createSlider(TabContents["svAimbot"].Content, "Hit Chance (%)", 0, 100, 100, function(v) getgenv().svAimbotHitChance = v end)
 newLabel(TabContents["svAimbot"].Content, "O svAimbot redireciona ataques brutalmente", 12, C.SUBTEXT)
  
--- ESP
-createToggle(TabContents["ESP"].Content, "ESP Principal", function(v) getgenv().ESPEnabled = v end, false)
-createToggle(TabContents["ESP"].Content, "Mostrar Nomes", function(v) getgenv().ESPNames = v end, false)
-createToggle(TabContents["ESP"].Content, "Mostrar Distância", function(v) getgenv().ESPDistance = v end, false)
-createToggle(TabContents["ESP"].Content, "Boxes", function(v) getgenv().ESPBoxes = v end, false)
-createToggle(TabContents["ESP"].Content, "Tracers", function(v) getgenv().ESPTracers = v end, false)
- 
--- Fly
-createToggle(TabContents["Fly"].Content, "Modo Fly (H)", function(v)
-    flyActive = v
-    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
-    if hum then hum.PlatformStand = v end
-end, false)
-createSlider(TabContents["Fly"].Content, "Velocidade", 1, 1000, 400, function(v) flySpeed = v end)
-
 -- GLITCH (LÓGICA DO CLAUDINEI)
 createToggle(TabContents["Glitch"].Content, "Sistema de Glitch", function(v) getgenv().GlideEnabled = v end, false)
 createSlider(TabContents["Glitch"].Content, "Glitch Speed", 1, 1000, 350, function(v) getgenv().GlideSpeed = v end)
@@ -672,7 +575,7 @@ end)
 setreadonly(mt, true)
  
 -- ============================================================
--- RENDERLOOP (FLY & AIMBOT)
+-- RENDERLOOP (AIMBOT)
 -- ============================================================
 RunService.RenderStepped:Connect(function()
     local mouseLoc = UserInputService:GetMouseLocation()
@@ -698,40 +601,7 @@ RunService.RenderStepped:Connect(function()
 
     -- svAimbot Target Update
     svTarget = getgenv().svAimbotEnabled and getClosest(getgenv().svAimbotFOV) or nil
- 
-    -- Fly Logic (FIXED)
-    if flyActive then
-        local root = myChar:FindFirstChild("HumanoidRootPart")
-        local hum = myChar:FindFirstChild("Humanoid")
-        if root and hum then
-            hum.PlatformStand = true
-            if not FlyVel or FlyVel.Parent ~= root then 
-                if FlyVel then FlyVel:Destroy() end 
-                FlyVel = Instance.new("BodyVelocity", root)
-                FlyVel.MaxForce = Vector3.new(9e9, 9e9, 9e9) 
-            end
-            if not FlyGyro or FlyGyro.Parent ~= root then
-                if FlyGyro then FlyGyro:Destroy() end
-                FlyGyro = Instance.new("BodyGyro", root)
-                FlyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-                FlyGyro.P = 3000
-            end
-            local dir = Vector3.zero
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir += Camera.CFrame.LookVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir -= Camera.CFrame.LookVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir -= Camera.CFrame.RightVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir += Camera.CFrame.RightVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0, 1, 0) end
-            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then dir -= Vector3.new(0, 1, 0) end
-            FlyVel.Velocity = (dir.Magnitude > 0 and dir.Unit * flySpeed) or Vector3.zero
-            FlyGyro.CFrame = Camera.CFrame
-        end
-    else
-        if FlyVel then FlyVel:Destroy() FlyVel = nil end
-        if FlyGyro then FlyGyro:Destroy() FlyGyro = nil end
-        local hum = myChar:FindFirstChild("Humanoid")
-        if hum and hum.PlatformStand then hum.PlatformStand = false end
-    end
+
 end)
 
 -- ============================================================
@@ -776,58 +646,6 @@ if LocalPlayer.Character then SetupTool(LocalPlayer.Character) end
 LocalPlayer.CharacterAdded:Connect(SetupTool)
  
 -- ============================================================
--- ESP SYSTEM (ENHANCED)
--- ============================================================
-local function createESP(plr)
-    local bg = Instance.new("BillboardGui", ScreenGui) bg.AlwaysOnTop = true bg.Size = UDim2.new(0, 100, 0, 50)
-    local lbl = Instance.new("TextLabel", bg) lbl.Size = UDim2.new(1, 0, 1, 0) lbl.BackgroundTransparency = 1 lbl.TextColor3 = Color3.new(1, 0, 0)
-    lbl.Font = Enum.Font.GothamBold lbl.TextSize = 11
-    
-    local Box = Drawing.new("Square")
-    Box.Thickness = 1
-    Box.Filled = false
-    Box.Visible = false
-    
-    local Tracer = Drawing.new("Line")
-    Tracer.Thickness = 1
-    Tracer.Visible = false
-
-    RunService.RenderStepped:Connect(function()
-        if getgenv().ESPEnabled and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("Head") then
-            local hrp = plr.Character.HumanoidRootPart
-            local head = plr.Character.Head
-            local pos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-            local color = getgenv().ESPRGB and Color3.fromHSV(tick() % 5 / 5, 1, 1) or Color3.new(1, 0, 0)
-            
-            bg.Adornee = head bg.Enabled = true 
-            lbl.TextColor3 = color
-            local text = "" if getgenv().ESPNames then text = text .. plr.Name .. "\n" end
-            if getgenv().ESPDistance and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head") then text = text .. math.floor((LocalPlayer.Character.Head.Position - head.Position).Magnitude) .. "m" end
-            lbl.Text = text
-            
-            if getgenv().ESPBoxes and onScreen then
-                local headPos = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 0.5, 0))
-                local legPos = Camera:WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
-                Box.Size = Vector2.new(2000 / pos.Z, headPos.Y - legPos.Y)
-                Box.Position = Vector2.new(pos.X - Box.Size.X / 2, pos.Y - Box.Size.Y / 2)
-                Box.Color = color
-                Box.Visible = true
-            else Box.Visible = false end
-            
-            if getgenv().ESPTracers and onScreen then
-                Tracer.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
-                Tracer.To = Vector2.new(pos.X, pos.Y)
-                Tracer.Color = color
-                Tracer.Visible = true
-            else Tracer.Visible = false end
-        else bg.Enabled = false Box.Visible = false Tracer.Visible = false end
-    end)
-end
-
-for _, v in pairs(Players:GetPlayers()) do if v ~= LocalPlayer then createESP(v) end end
-Players.PlayerAdded:Connect(function(plr) plr.CharacterAdded:Connect(function() createESP(plr) end) end)
- 
--- ============================================================
 -- INPUTS
 -- ============================================================
 local menuOpen = false
@@ -836,26 +654,16 @@ local function toggleMenu()
     local openPos, closePos = UDim2.new(0.5, 0, 0.5, 0), UDim2.new(0.5, 0, -1.5, 0)
     if menuOpen then 
         Main.Visible = true 
-        Shadow.Visible = true 
-        ShadowGlow.Visible = true
         TweenService:Create(Main, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = openPos}):Play() 
-        TweenService:Create(Shadow, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = openPos}):Play() 
-        TweenService:Create(ShadowGlow, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = openPos}):Play()
     else 
         TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Position = closePos}):Play() 
-        TweenService:Create(Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Position = closePos}):Play() 
-        TweenService:Create(ShadowGlow, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Position = closePos}):Play()
-        task.delay(0.32, function() if not menuOpen then Main.Visible = false Shadow.Visible = false ShadowGlow.Visible = false end end) 
+        task.delay(0.32, function() if not menuOpen then Main.Visible = false end end) 
     end
 end
  
 UserInputService.InputBegan:Connect(function(input, gpe)
     if gpe then return end
     if input.KeyCode == MENU.TOGGLE_KEY then toggleMenu()
-    elseif input.KeyCode == Enum.KeyCode.H then 
-        flyActive = not flyActive 
-        local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
-        if hum then hum.PlatformStand = flyActive end
     elseif input.KeyCode == Enum.KeyCode.G then 
         local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
