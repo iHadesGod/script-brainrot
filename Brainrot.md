@@ -128,7 +128,7 @@ end
 -- INTERFACE PRINCIPAL
 -- ============================================================
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "wClownMaster"
+ScreenGui.Name = "wIHades"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = PlayerGui
@@ -160,7 +160,7 @@ local TitleLabel = Instance.new("TextLabel", TitleBar)
 TitleLabel.Size = UDim2.new(0, 250, 1, 0)
 TitleLabel.Position = UDim2.new(0, 16, 0, 0)
 TitleLabel.BackgroundTransparency = 1
-TitleLabel.Text = "wClownMaster"
+TitleLabel.Text = "wIHades"
 TitleLabel.TextColor3 = C.TEXT
 TitleLabel.Font = Enum.Font.GothamBold
 TitleLabel.TextSize = 15
